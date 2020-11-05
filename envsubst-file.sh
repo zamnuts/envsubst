@@ -3,18 +3,19 @@ set -e
 
 PROCESSED=false
 WORKDIR=/workdir
+PROCESSEDDIR=/processed
 
-for i in "$WORKDIR"/*; do
-  echo "Processing $i ..."
-
-  envsubst < "$WORKDIR/$i" > "/processed/$i"
-  PROCESSED=true
+for path in "$WORKDIR"/*; do
+  if [ -f "$path" ]; then
+    echo "Processing $path ..."
+    envsubst < "$path" > "$PROCESSEDDIR/$(basename "$path")"
+    PROCESSED=true
+  fi
 done
 
-ls /processed/
+ls "$PROCESSEDDIR"
 
-if [ ! $PROCESSED = true ]
-then
+if [ ! $PROCESSED = true ]; then
   echo 'No files processed'
   exit 1
 fi
